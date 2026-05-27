@@ -10,37 +10,22 @@ def index():
 @app.route("/scan")
 def scan():
     sport = request.args.get("sport","all")
-    try:
-        if sport == "nba":
-            bets=implied_probability("basketball_nba")
-            for bet in bets:
-                bet["sport"]="NBA"
+    try: 
+        sports_tags ={
+            "NBA" : ["basketball_nba"],
+            "Soccer" : ["soccer_epl", "soccer_france_ligue_one", "soccer_uefa_champs_league","soccer_spain_la_liga"],
+            "Tennis" : ["tennis_wta_italian_open"],
+            "All" : ["basketball_nba", "soccer_epl", "soccer_france_ligue_one", "soccer_uefa_champs_league","soccer_spain_la_liga", "tennis_wta_italian_open"]
+        }
         
-        elif sport == "soccer":
-            bets=implied_probability("soccer_fifa_world_cup")
+        keys=[]
+        for key in sports_tags[sport]:
+            bets=implied_probability(key)
             for bet in bets:
-                bet["sport"]="Soccer"
+                bet["sports_tag"]=key
+            keys = keys + bets
 
-        elif sport == "tennis":
-            bets=implied_probability("tennis_wta_charleston_open")
-            for bet in bets:
-                bet["sport"]="Tennis"
-
-        else:
-            nba = implied_probability("basketball_nba")
-            for bet in nba:
-                bet["sport"]="NBA"
-            soccer = implied_probability("soccer_fifa_world_cup")
-            for bet in soccer:
-                bet["sport"]="Soccer"
-            tennis = implied_probability("tennis_wta_charleston_open")
-            for bet in tennis:
-                bet["sport"]="Tennis"
-            bets = nba + soccer + tennis
-
-        for bet in bets:
-            bet["implied_probability"] = 0.75
-        filtered=filter_bets(bets,0.01)
+        filtered=filter_bets(keys,0.01)
         print(len(filtered))
         for bet in filtered:
             ev=calculate_ev(0.6,bet["price"] ) #we hard code implied prob at 0.6 to test EV : this is real value bet["implied_probability"]
