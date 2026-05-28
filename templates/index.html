@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head> <title>Evedge</title>
+<head> <title>Valio- EV Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport"
     content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     
     <style>
     
@@ -273,7 +275,7 @@
                 <span>${bet.bookmaker}</span>
                 <span class="odds">${bet.price}</span>
             </div>
-            <!--<span class="EV">+${bet.ev}%</span>-->
+            <span class="EV">+${bet.ev}%</span>
             `
             document.getElementById("results").appendChild(card)
             })

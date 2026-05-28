@@ -9,13 +9,17 @@ def index():
 
 @app.route("/scan")
 def scan():
-    sport = request.args.get("sport","all")
+    sport = request.args.get("sport","all") #.lower()
     try: 
         sports_tags ={
-            "NBA" : ["basketball_nba"],
-            "Soccer" : ["soccer_epl", "soccer_france_ligue_one", "soccer_uefa_champs_league","soccer_spain_la_liga"],
-            "Tennis" : ["tennis_wta_italian_open"],
-            "All" : ["basketball_nba", "soccer_epl", "soccer_france_ligue_one", "soccer_uefa_champs_league","soccer_spain_la_liga", "tennis_wta_italian_open"]
+            "nba" : ["basketball_nba"],
+            "soccer" : [#"soccer_epl" out of season, "soccer_france_ligue_one", "soccer_spain_la_liga",
+                "soccer_uefa_champs_league", "soccer_fifa_world_cup",],
+            "tennis" : [# out of season"tennis_wta_italian_open", 
+                "tennis_atp_french_open", "tennis_wta_french_open"],
+            "all" :  ["basketball_nba", "soccer_uefa_champs_league", "soccer_fifa_world_cup", "tennis_atp_french_open", "tennis_wta_french_open",
+                     #out of season"soccer_epl", "soccer_france_ligue_one",soccer_spain_la_liga", "tennis_wta_italian_open", 
+                      ]
         }
         
         keys=[]
@@ -25,14 +29,15 @@ def scan():
                 bet["sports_tag"]=key
             keys = keys + bets
 
-        filtered=filter_bets(keys,0.01)
+        filtered=filter_bets(keys,-1)  #-1 is a testing value, real value is 0.01
         print(len(filtered))
         for bet in filtered:
-            ev=calculate_ev(0.6,bet["price"] ) #we hard code implied prob at 0.6 to test EV : this is real value bet["implied_probability"]
+            ev=calculate_ev(0.6,bet["price"] )  #0.6 is test value real value is : bet["implied_probability"]
             bet["ev"]=round(ev,2)   
         return jsonify(filtered)
 
     except Exception as e:
+        print (e)
         return jsonify({"error":str(e)}), 500
 
 

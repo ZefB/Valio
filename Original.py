@@ -6,11 +6,11 @@ load_dotenv()
 OddsApi= os.environ.get("ODDS_API_KEY")
 
 def calculate_ev(probability, odds): #Calculate ev
-    return probability * odds - 1
+    return (probability * (odds - 1))- ( 1- probability)
 
 def convert_american_to_decimal(american_odds): 
     if american_odds > 0:
-        decimal = (american_odds/100)+1 # type: converts US odds to decimals
+        decimal = (american_odds/100)+1 #type:converts_US odds to decimals
     elif american_odds < 0:
         decimal = (100/abs(american_odds))+1 #We take absolute value to avoid getting negative results
     return decimal
@@ -70,20 +70,27 @@ def filter_bets(bets, threshold):
             filtered.append(game)
     return (filtered)
 
-
 if __name__ == "__main__":
-    nba_bets=implied_probability("basketball_nba")
-    nba_bets[0]["implied_probability"]= 0.65 #This is just to test the filter function, we set the first bet to have a high implied probability so it should be the only one that gets through the filter
-    
-    soccer_bets=implied_probability("soccer_fifa_world_cup")
-    soccer_bets[0]["implied_probability"]= 0.65 #This is just to test the filter function, we set the first bet to have a high implied probability so it should be the only one that gets through the filter
-    
-    tennis_bets=implied_probability("tennis_wta_charleston_open")
-    tennis_bets[0]["implied_probability"]= 0.65
+    sport_keys = [
+    "basketball_nba",
+    "soccer_epl",
+    "soccer_france_ligue_one",
+    "soccer_uefa_champs_league",
+    "soccer_spain_la_liga",
+    "tennis_wta_italian_open"
+    "tennis_atp_french_open",
+    "tennis_wta_french_open",
+    "soccer_fifa_world_cup",
+    ]
 
-    bets = nba_bets + soccer_bets + tennis_bets
+    all_bets = []
+    for key in sport_keys:
+        bets = implied_probability(key)
+        for bet in bets :
+            bet ["sport"] = key
+        all_bets= all_bets + bets
 
-    print (filter_bets (bets, 0.05))
+    print(filter_bets(all_bets, 0.05))
         
 
                 
