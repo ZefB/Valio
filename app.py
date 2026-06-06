@@ -7,6 +7,10 @@ app = Flask (__name__) #tells flask where project files are located
 def index():
     return render_template("index.html")
 
+PRE_FILTER_THRESHOLD= -0.1  #I added 2 thresholds, 1 that is a prefilter to limit claude api calls and the other to gain precision in games that passed the first test
+DISPLAY_THRESHOLD= 0.05
+
+
 @app.route("/scan")
 def scan():
     sport = request.args.get("sport","all") #.lower()
@@ -29,12 +33,18 @@ def scan():
                 bet["sports_tag"]=key
             keys = keys + bets
 
-        filtered=filter_bets(keys,-1)  #-1 is a testing value, real value is 0.01
+        filtered=filter_bets(keys,PRE_FILTER_THRESHOLD) 
         print(len(filtered))
-        for bet in filtered:
-            ev=calculate_ev(0.6,bet["price"] )  #0.6 is test value real value is : bet["implied_probability"]
+        
+        claude_filtered = filtered # Stage 2: Claude analyzes pre-filtered games → returns true probability per bet
+                                    # claude_filtered = claude_analysis(filtered)  # TODO: implement in claude_analyzer.py
+
+        for bet in claude_filtered:
+            ev=calculate_ev(bet["implied_probability"],bet["price"] )  #0.6 is test value real value is : bet["implied_probability"]
             bet["ev"]=round(ev,2)   
-        return jsonify(filtered)
+
+        final = filter_bets(claude_filtered, DISPLAY_THRESHOLD)
+        return jsonify(final)
 
     except Exception as e:
         print (e)
