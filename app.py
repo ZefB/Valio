@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, render_template,request #We import necessary tools
 
+from claude_analyzer import claude_analyzer
+
 from Original import implied_probability, filter_bets, calculate_ev #We import functions from python backend
 app = Flask (__name__) #tells flask where project files are located
 
@@ -36,15 +38,36 @@ def scan():
         filtered=filter_bets(keys,PRE_FILTER_THRESHOLD) 
         print(len(filtered))
         
-        claude_filtered = filtered # Stage 2: Claude analyzes pre-filtered games → returns true probability per bet
+        claude_filtered = []
+        for bet in filtered:
+                result = claude_analyzer(bet["home_team"], bet["away_team"], sport)
+                print(result)
+                if result == None:
+                    bet["analyzed"]=False
+                elif result != None:
+                    bet["analyzed"] = True
+                    bet["true_probability"]=result
+
+                claude_filtered.append(bet)
+ 
+        
+        # Stage 2: Claude analyzes pre-filtered games → returns true probability per bet
                                     # claude_filtered = claude_analysis(filtered)  # TODO: implement in claude_analyzer.py
 
         for bet in claude_filtered:
-            ev=calculate_ev(bet["implied_probability"],bet["price"] )  #0.6 is test value real value is : bet["implied_probability"]
+            if bet["analyzed"] == True:
+                ev=calculate_ev(bet["true_probability"],bet["price"] )  #0.6 is test value real value is : bet["implied_probability"]
+            
+            else:
+                ev=calculate_ev(bet["implied_probability"],bet["price"] )
+            
             bet["ev"]=round(ev,2)   
 
+        
+        
         final = filter_bets(claude_filtered, DISPLAY_THRESHOLD)
         return jsonify(final)
+
 
     except Exception as e:
         print (e)
