@@ -9,7 +9,7 @@ app = Flask (__name__) #tells flask where project files are located
 def index():
     return render_template("index.html")
 
-PRE_FILTER_THRESHOLD= -0.1  #I added 2 thresholds, 1 that is a prefilter to limit claude api calls and the other to gain precision in games that passed the first test
+PRE_FILTER_THRESHOLD= 0.0  #I added 2 thresholds, 1 that is a prefilter to limit claude api calls and the other to gain precision in games that passed the first test
 DISPLAY_THRESHOLD= 0.05
 
 
@@ -29,11 +29,18 @@ def scan():
         }
         
         keys=[]
+        seen_games = set()
         for key in sports_tags[sport]:
             bets=implied_probability(key)
             for bet in bets:
+                if (bet["home_team"], bet["away_team"]) in seen_games:
+                    continue
+
+                else:
+                    seen_games.add((bet["home_team"], bet["away_team"]))
+
                 bet["sports_tag"]=key
-            keys = keys + bets
+                keys.append(bet)
 
         filtered=filter_bets(keys,PRE_FILTER_THRESHOLD) 
         print(len(filtered))
@@ -62,8 +69,9 @@ def scan():
                 ev=calculate_ev(bet["implied_probability"],bet["price"] )
             
             bet["ev"]=round(ev,2)   
+            
+            claude_filtered = [bet for bet in claude_filtered if bet ["analyzed"]==True]
 
-        
         
         final = filter_bets(claude_filtered, DISPLAY_THRESHOLD)
         return jsonify(final)
