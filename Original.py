@@ -65,7 +65,11 @@ def implied_probability(sports):
 def filter_bets(bets, threshold):
     filtered = []
     for game in bets:
-        ev = calculate_ev(game['implied_probability'], game['price'])
+        if 'true_probability' in game:
+            ev = calculate_ev(game['true_probability'], game['price'])
+        else :
+            ev = calculate_ev(game['implied_probability'], game['price'])
+        
         if ev > threshold:
             filtered.append(game)
     return (filtered)

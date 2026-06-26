@@ -10,7 +10,7 @@ def index():
     return render_template("index.html")
 
 PRE_FILTER_THRESHOLD= 0.0  #I added 2 thresholds, 1 that is a prefilter to limit claude api calls and the other to gain precision in games that passed the first test
-DISPLAY_THRESHOLD= 0.05
+DISPLAY_THRESHOLD= 0.0002
 
 
 @app.route("/scan")
