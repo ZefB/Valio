@@ -77,7 +77,7 @@ if __name__ == "__main__":
     "soccer_france_ligue_one",
     "soccer_uefa_champs_league",
     "soccer_spain_la_liga",
-    "tennis_wta_italian_open"
+    "tennis_wta_italian_open",
     "tennis_atp_french_open",
     "tennis_wta_french_open",
     "soccer_fifa_world_cup",

@@ -229,6 +229,15 @@
 
 <script>
     let selectedSport= "all"
+
+    const sportNames = {
+        "soccer_fifa_world_cup" : "Fifa World Cup",
+        "soccer_uefa_champs_league": "UEFA Champions League",
+        "basketball_nba" : "NBA",
+        "tennis_atp_french_open" : "French Open",
+        "tennis_wta_french_open" : "French Open",
+    }
+
     function setFilter(sport, btn){
         selectedSport=sport
         document.querySelectorAll(".filters button").forEach(function(b){b.classList.remove("active-nba","active-soccer","active-tennis","active-all")})
@@ -266,16 +275,16 @@
             let card=document.createElement("div")
             card.className="card"
             let emojis = {"NBA": "🏀", "Soccer": "⚽", "Tennis": "🎾"}
-            let emoji = emojis[bet.sport] || "🏅"
+            let emoji = emojis[sportNames[bet.sports_tag] || bet.sports_tag] || "🏅"
             card.innerHTML=`
-            <h4 class="sports">${emoji}${bet.sport}</h4>
+            <h4 class="sports">${emoji} ${sportNames[bet.sports_tag] || bet.sports_tag}</h4>
             <p class="match">${bet.home_team} vs ${bet.away_team}</p>
             <p class="sports">Best value: <strong style="color:#16c784">${bet.team}</strong></p>
             <div class="bets-row">
                 <span>${bet.bookmaker}</span>
                 <span class="odds">${bet.price}</span>
             </div>
-            <span class="EV">+${bet.ev}%</span>
+            <span class="EV">${bet.ev > 0 ? '+' : ''}${bet.ev}%</span>
             `
             document.getElementById("results").appendChild(card)
             })

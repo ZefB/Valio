@@ -47,7 +47,7 @@ def scan():
         
         claude_filtered = []
         for bet in filtered:
-                result = claude_analyzer(bet["home_team"], bet["away_team"], sport)
+                result = claude_analyzer(bet["home_team"], bet["away_team"], bet["sports_tag"])
                 print(result)
                 if result == None:
                     bet["analyzed"]=False
@@ -63,14 +63,14 @@ def scan():
 
         for bet in claude_filtered:
             if bet["analyzed"] == True:
-                ev=calculate_ev(bet["true_probability"],bet["price"] )  #0.6 is test value real value is : bet["implied_probability"]
+                ev=calculate_ev(bet["true_probability"],bet["price"] ) 
             
             else:
                 ev=calculate_ev(bet["implied_probability"],bet["price"] )
             
             bet["ev"]=round(ev,2)   
             
-            claude_filtered = [bet for bet in claude_filtered if bet ["analyzed"]==True]
+        claude_filtered = [bet for bet in claude_filtered if bet ["analyzed"]==True] #We make sure to only keep and display bets that pass the threshold 
 
         
         final = filter_bets(claude_filtered, DISPLAY_THRESHOLD)
