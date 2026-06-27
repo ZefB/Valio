@@ -149,10 +149,26 @@
         margin-top: 32px;
     }
 
+    .logo {
+        height: 400px;
+        display: block;
+        margin: 0 auto 80px;
+    }
+
     @media (max-width: 768px){
         .results-grid{
             display: grid;
             grid-template-columns: 1fr;
+        }
+
+        .logo{
+            height: 200px;
+            max-width: 100%;
+        }
+
+        button{
+            padding : 7px 12px;
+            font-size : 15px;
         }
     }
 
@@ -211,7 +227,7 @@
     </style>
 </head>
 <body>
-    <img src ="/static/valio_logo-removebg-preview.png" alt="Valio" style="height: 400px; display: block; margin: 0 auto 8px;">
+    <img src ="/static/valio_logo-removebg-preview.png" alt="Valio" class="logo">
     <P>Find the best value bets across all sports</P>
     <div class="filters">
     <button onclick="setFilter('nba',this)">NBA</button>
