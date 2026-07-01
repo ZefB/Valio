@@ -21,10 +21,10 @@ def scan():
             "nba" : ["basketball_nba"],
             "soccer" : [#"soccer_epl" out of season, "soccer_france_ligue_one", "soccer_spain_la_liga",
                 "soccer_uefa_champs_league", "soccer_fifa_world_cup",],
-            "tennis" : [# out of season"tennis_wta_italian_open", 
-                "tennis_atp_french_open", "tennis_wta_french_open"],
-            "all" :  ["basketball_nba", "soccer_uefa_champs_league", "soccer_fifa_world_cup", "tennis_atp_french_open", "tennis_wta_french_open",
-                     #out of season"soccer_epl", "soccer_france_ligue_one",soccer_spain_la_liga", "tennis_wta_italian_open", 
+            "tennis" : ["tennis_atp_wimbledon", "tennis_wta_wimbledon",], # out of season"tennis_wta_italian_open", "tennis_atp_french_open", "tennis_wta_french_open"],
+            "baseball" : ["baseball_mlb"],
+            "all" :  ["basketball_nba", "soccer_uefa_champs_league", "soccer_fifa_world_cup", "tennis_atp_wimbledon", "tennis_wta_wimbledon", "baseball_mlb"
+                     #out of season"soccer_epl", "soccer_france_ligue_one",soccer_spain_la_liga", "tennis_wta_italian_open","tennis_atp_french_open", "tennis_wta_french_open", 
                       ]
         }
         

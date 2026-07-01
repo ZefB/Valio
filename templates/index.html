@@ -193,6 +193,11 @@
         color: black;
     }
 
+    .active-baseball{
+        background-color : #002D72;
+        color : black;
+    }
+
     .active-all{
         background-color: #16c784;
         color: black;
@@ -233,6 +238,7 @@
     <button onclick="setFilter('nba',this)">NBA</button>
     <button onclick="setFilter('soccer',this)">Soccer</button>
     <button onclick="setFilter('tennis',this)">Tennis</button>
+    <button onclick="setFilter('baseball',this)">Baseball </button>
     <button onclick="setFilter('all', this)">All Sports</button>
     </div>
     <button id="scan-btn" onclick="ScanBets()">Scan for Best Bets</button>
@@ -252,11 +258,14 @@
         "basketball_nba" : "NBA",
         "tennis_atp_french_open" : "French Open",
         "tennis_wta_french_open" : "French Open",
+        "tennis_atp_wimbledon" : "Wimbledon",
+        "tennis_wta_wimbledon" : "Wimbledon",
+        "baseball_mlb" : "MLB baseball"
     }
 
     function setFilter(sport, btn){
         selectedSport=sport
-        document.querySelectorAll(".filters button").forEach(function(b){b.classList.remove("active-nba","active-soccer","active-tennis","active-all")})
+        document.querySelectorAll(".filters button").forEach(function(b){b.classList.remove("active-nba","active-soccer","active-tennis","active-baseball","active-all")})
         if (selectedSport=="nba"){
             btn.classList.add("active-nba")
         }
@@ -266,6 +275,10 @@
         
         else if (selectedSport=="tennis"){
             btn.classList.add("active-tennis")
+        }
+
+        else if (selectedSport=="baseball"){
+            btn.classList.add("active-baseball")
         }
 
         else{
@@ -290,7 +303,7 @@
             bets.forEach(function(bet){
             let card=document.createElement("div")
             card.className="card"
-            let emojis = {"NBA": "🏀", "Soccer": "⚽", "Tennis": "🎾"}
+            let emojis = {"NBA": "🏀", "Soccer": "⚽", "Tennis": "🎾", "Baseball": "⚾",}
             let emoji = emojis[sportNames[bet.sports_tag] || bet.sports_tag] || "🏅"
             card.innerHTML=`
             <h4 class="sports">${emoji} ${sportNames[bet.sports_tag] || bet.sports_tag}</h4>
