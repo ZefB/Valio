@@ -4,15 +4,33 @@ from claude_analyzer import claude_analyzer
 from Original import implied_probability, filter_bets, calculate_ev #We import functions from python backend
 app = Flask (__name__) #tells flask where project files are located
 
-import requests
+
 
 @app.route("/signup", methods=["POST"]) #Set up sign up page
-response = requests.get ('https://')
-
 def signup():
-    request.json()
+    data = request.get_json()
+    password = data["password"]
+    email = data ["email"]
+    try:
+        supabase.auth.sign_up({"email": email, "password": password})
+        return jsonify({"message": "success"})
+    except Exception as e:
+        print (e)
+        return jsonify({"error":str(e)}), 500
+    
 
 @app.route("/login", methods=["POST"]) #set up login page
+def login():
+    data = request.get_json()
+    password = data["password"]
+    email = data ["email"]
+    try:
+        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        return jsonify({"message": "success", "session": response.session.access_token})
+    
+    except Exception as e:
+        print (e)
+        return jsonify({"error":str(e)}), 500
 
 
 
