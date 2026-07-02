@@ -1,9 +1,20 @@
 from flask import Flask, jsonify, render_template,request #We import necessary tools
-
+from supabase_client import supabase #Import Supabase to create user authentification
 from claude_analyzer import claude_analyzer
-
 from Original import implied_probability, filter_bets, calculate_ev #We import functions from python backend
 app = Flask (__name__) #tells flask where project files are located
+
+import requests
+
+@app.route("/signup", methods=["POST"]) #Set up sign up page
+response = requests.get ('https://')
+
+def signup():
+    request.json()
+
+@app.route("/login", methods=["POST"]) #set up login page
+
+
 
 @app.route("/") #decorator that tells flask what to do when it is initiated
 def index():
