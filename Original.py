@@ -85,6 +85,9 @@ if __name__ == "__main__":
     "tennis_atp_french_open",
     "tennis_wta_french_open",
     "soccer_fifa_world_cup",
+    "tennis_atp_wimbledon",
+    "tennis_wta_wimbledon",
+    "baseball_mlb",
     ]
 
     all_bets = []

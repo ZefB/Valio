@@ -203,6 +203,7 @@
         color: black;
     }
 
+
     footer{
         text-align: center;
         color : #555;
@@ -227,13 +228,28 @@
         to {transform: rotate(360deg);}
     }
 
+    .auth-buttons{
+        position:fixed;
+        top:16px;
+        right:24px;
+        display: flex;
+        gap: 10px
+    }
+
 
 
     </style>
 </head>
 <body>
+
+    <div class="auth-buttons">
+    <button onclick="openAuth('signup')">Sign Up</button>
+    <button onclick="openAuth('login')">Login</button>
+    </div>
+
     <img src ="/static/valio_logo-removebg-preview.png" alt="Valio" class="logo">
     <P>Find the best value bets across all sports</P>
+
     <div class="filters">
     <button onclick="setFilter('nba',this)">NBA</button>
     <button onclick="setFilter('soccer',this)">Soccer</button>
@@ -241,6 +257,18 @@
     <button onclick="setFilter('baseball',this)">Baseball </button>
     <button onclick="setFilter('all', this)">All Sports</button>
     </div>
+
+    <div id="auth-modal" style="display:none;">
+        <div id="auth-box">
+            <h2 id="auth-title">Sign Up</h2>
+            <input id="auth-email" type="email" placeholder="Email">
+            <input id="auth-password" type="password" placeholder="Password">
+            <button id="auth-submit">Sign Up</button>
+            <p id="auth-toggle">Already have an account? <span onclick="toggleAuth()">Login</span></p>
+            <p id="auth-message"></p>
+        </div>
+    </div>
+
     <button id="scan-btn" onclick="ScanBets()">Scan for Best Bets</button>
     <div id="results" class="results-grid"></div>
 
