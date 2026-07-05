@@ -264,9 +264,9 @@
 </head>
 <body>
 
-    <div class="auth-buttons">
-    <button onclick="openAuth('signup')">Sign Up</button>
-    <button onclick="openAuth('login')">Login</button>
+    <div id ="auth-buttons" class="auth-buttons">
+        <button onclick="openAuth('signup')">Sign Up</button>
+        <button onclick="openAuth('login')">Login</button>
     </div>
 
     <img src ="/static/valio_logo-removebg-preview.png" alt="Valio" class="logo">
@@ -286,7 +286,7 @@
             <h2 id="auth-title">Sign Up</h2>
             <input id="auth-email" type="email" placeholder="Email">
             <input id="auth-password" type="password" placeholder="Password">
-            <button id="auth-submit" onclick="submitAuth()">Sign Up</button>
+            <button type="button" id="auth-submit" onclick="submitAuth()">Sign Up</button>
             <p id="auth-toggle">Already have an account? <span onclick="toggleAuth()">Login</span></p>
             <p id="auth-message"></p>
         </div>
@@ -365,6 +365,7 @@
                 <span class="odds">${bet.price}</span>
             </div>
             <span class="EV">${bet.ev > 0 ? '+' : ''}${bet.ev}%</span>
+            ${currentSession ? `<button onclick="logBet('${bet.home_team}','${bet.away_team}','${bet.sports_tag}','${bet.bookmaker}',${bet.price},${bet.ev})">Log Bet</button>` : ''}
             `
             document.getElementById("results").appendChild(card)
             })
@@ -381,6 +382,7 @@
     }
 
     let currentMode = "signup"
+    let currentSession = null
     function openAuth(mode){
         currentMode = mode
         let btn = document.getElementById("auth-modal").style.display = "flex"
@@ -424,8 +426,10 @@
                 document.getElementById("auth-message").textContent = data.error
             }
             else {
+                currentSession = data.session
                 document.getElementById("auth-message").textContent = "Success!"
                 closeAuth()
+                updateAuthUI()
             }
         })
 
@@ -443,11 +447,54 @@
                 document.getElementById("auth-message").textContent = data.error
             }
             else {
+                currentSession = data.session
+                console.log(currentSession)
                 document.getElementById("auth-message").textContent = "Success!"
                 closeAuth()
+                updateAuthUI()
             }
         })
     }
+    }
+
+    function updateAuthUI(){
+        if (currentSession == null){
+            document.getElementById("auth-buttons").innerHTML = '<button onclick="openAuth(\'signup\')">Sign Up</button><button onclick="openAuth(\'login\')">Login</button>'
+        }
+
+        else {
+            document.getElementById("auth-buttons").innerHTML = '<button onclick="logout()">Logout</button>'
+        }
+    }
+
+    function logout(){
+        currentSession = null
+        updateAuthUI()
+    }
+
+    function logBet(home_team, away_team, sports_tag, bookmaker, price, ev){
+        fetch("/log_bet", {
+            method : "POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({home_team: home_team,
+                away_team : away_team,
+                sports_tag : sports_tag,
+                bookmaker : bookmaker,
+                price : price ,
+                ev : ev ,
+                token : currentSession,
+            })
+        })
+        .then(function(response){return response.json(); })
+        .then(function(data){
+            if(data.error){
+                alert(data.error)
+            }
+
+            else{
+                alert("Bet logged successfully!")
+            }
+        })
     }
 
         

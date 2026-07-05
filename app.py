@@ -44,7 +44,7 @@ DISPLAY_THRESHOLD= 0.0002
 
 @app.route("/scan")
 def scan():
-    sport = request.args.get("sport","all") #.lower()
+    sport = request.args.get("sport","all")
     try: 
         sports_tags ={
             "nba" : ["basketball_nba"],
@@ -109,7 +109,26 @@ def scan():
     except Exception as e:
         print (e)
         return jsonify({"error":str(e)}), 500
-
+    
+@app.route("/log_bet", methods=["POST"])
+def log_bet():
+    try : 
+        data = request.get_json()
+        token = data["token"]
+        home_team = data["home_team"]
+        away_team = data["away_team"]
+        sports_tag = data ["sports_tag"]
+        bookmaker = data["bookmaker"]
+        price = data["price"]
+        ev = data["ev"]
+        user = supabase.auth.get_user(token)
+        user_id = user.user.id
+        supabase.table("Bets").insert({"home_team" : home_team,"away_team" : away_team, "sports_tag" :  sports_tag, "bookmaker" : bookmaker, "price" : price, "ev" : ev, "user_id" : user_id}).execute()
+        return jsonify({"message": "success"})
+    
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__=="__main__": #only for dev not prod, it starts the server
