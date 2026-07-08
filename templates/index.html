@@ -294,6 +294,7 @@
 
     <button id="scan-btn" onclick="ScanBets()">Scan for Best Bets</button>
     <div id="results" class="results-grid"></div>
+    <div id="my-bets-section" class="logged-bets"></div>
 
 <footer>
     <p>18+ uniquement. A titre informatif seulement. Pas de conseil financier ou de pari. Jouez responsablement.</p>
@@ -365,7 +366,7 @@
                 <span class="odds">${bet.price}</span>
             </div>
             <span class="EV">${bet.ev > 0 ? '+' : ''}${bet.ev}%</span>
-            ${currentSession ? `<button onclick="logBet('${bet.home_team}','${bet.away_team}','${bet.sports_tag}','${bet.bookmaker}',${bet.price},${bet.ev})">Log Bet</button>` : ''}
+            ${currentSession ? `<button onclick="logBet('${bet.home_team}','${bet.away_team}', '${bet.team}', '${bet.sports_tag}','${bet.bookmaker}',${bet.price},${bet.ev}, this)">Log Bet</button>` : ''}
             `
             document.getElementById("results").appendChild(card)
             })
@@ -463,7 +464,7 @@
         }
 
         else {
-            document.getElementById("auth-buttons").innerHTML = '<button onclick="logout()">Logout</button>'
+            document.getElementById("auth-buttons").innerHTML = '<button onclick="logout()">Logout</button><button onclick="showMyBets()">My Bets</button>'
         }
     }
 
@@ -472,12 +473,13 @@
         updateAuthUI()
     }
 
-    function logBet(home_team, away_team, sports_tag, bookmaker, price, ev){
+    function logBet(home_team, away_team, team, sports_tag, bookmaker, price, ev, btn){
         fetch("/log_bet", {
             method : "POST",
             headers:{"Content-Type":"application/json"},
             body: JSON.stringify({home_team: home_team,
                 away_team : away_team,
+                team : team,
                 sports_tag : sports_tag,
                 bookmaker : bookmaker,
                 price : price ,
@@ -492,10 +494,49 @@
             }
 
             else{
+                btn.disabled = true
                 alert("Bet logged successfully!")
             }
         })
     }
+
+    function showMyBets(){
+        fetch("/my_bets", {
+            method : "POST",
+            headers : {"Content-type" : "application/json"},
+            body: JSON.stringify({token:currentSession})
+            })
+
+        .then(function(response){return response.json(); })
+        .then(function(data){
+            if(data.error){
+                alert(data.error)
+            }
+
+            else {
+                data.forEach(function(bet){
+                let card=document.createElement("div")
+            card.className="card"
+            let emojis = {"NBA": "🏀", "Soccer": "⚽", "Tennis": "🎾", "Baseball": "⚾",}
+            let emoji = emojis[sportNames[bet.sports_tag] || bet.sports_tag] || "🏅"
+            card.innerHTML=`
+            <h4 class="sports">${emoji} ${sportNames[bet.sports_tag] || bet.sports_tag}</h4>
+            <p class="match">${bet.home_team} vs ${bet.away_team}</p>
+            <p class="sports">Best Value: <strong style="color:#16c784">${bet.team}</strong></p>
+            <div class="bets-row">
+                <span>${bet.bookmaker}</span>
+                <span class="odds">${bet.price}</span>
+            </div>
+            <span class="EV">${bet.ev > 0 ? '+' : ''}${bet.ev}%</span>
+            <span>Status: ${bet.result}</span>
+            }`
+            document.getElementById("my-bets-section").appendChild(card)
+            })
+            }
+
+        })
+    }   
+
 
         
 

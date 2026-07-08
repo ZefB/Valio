@@ -117,15 +117,30 @@ def log_bet():
         token = data["token"]
         home_team = data["home_team"]
         away_team = data["away_team"]
+        team = data["team"]
         sports_tag = data ["sports_tag"]
         bookmaker = data["bookmaker"]
         price = data["price"]
         ev = data["ev"]
         user = supabase.auth.get_user(token)
         user_id = user.user.id
-        supabase.table("Bets").insert({"home_team" : home_team,"away_team" : away_team, "sports_tag" :  sports_tag, "bookmaker" : bookmaker, "price" : price, "ev" : ev, "user_id" : user_id}).execute()
+        supabase.table("Bets").insert({"home_team" : home_team,"away_team" : away_team, "team" : team, "sports_tag" :  sports_tag, "bookmaker" : bookmaker, "price" : price, "ev" : ev, "user_id" : user_id}).execute()
         return jsonify({"message": "success"})
     
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/my_bets", methods=["POST"])
+def my_bets():
+    try : 
+        data = request.get_json()
+        token = data["token"]
+        user = supabase.auth.get_user(token)
+        user_id = user.user.id
+        result = supabase.table("Bets").select("*").eq("user_id", user_id).execute()
+        return jsonify(result.data)
+
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
