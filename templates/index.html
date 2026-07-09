@@ -514,6 +514,15 @@
             }
 
             else {
+                let totalEV = 0
+                data.forEach(function(b){ totalEV += b.ev})
+                let avgEV = (totalEV / data.length) . toFixed(2)
+
+                let summary = document.createElement("div")
+                summary.innerHTML = `<p>Total Bets: ${data.length}</p>
+                                    <p>Average EV: ${avgEV}%`
+                document.getElementById("my-bets-section").appendChild(summary)
+        
                 data.forEach(function(bet){
                 let card=document.createElement("div")
             card.className="card"
