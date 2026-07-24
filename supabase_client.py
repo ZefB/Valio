@@ -9,3 +9,5 @@ SupabaseURL= os.environ.get("SUPABASE_PROJECT_URL")
 SupabaseKEY = os.environ.get("SUPABASE_KEY")
 
 supabase= create_client(SupabaseURL, SupabaseKEY)
+
+supabase2 = create_client(SupabaseURL, SupabaseKEY)

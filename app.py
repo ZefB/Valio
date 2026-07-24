@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template,request #We import necessary tools
-from supabase_client import supabase #Import Supabase to create user authentification
+from supabase_client import supabase, supabase2 #Import Supabase to create user authentification
 from claude_analyzer import claude_analyzer
 from Original import implied_probability, filter_bets, calculate_ev #We import functions from python backend
 app = Flask (__name__) #tells flask where project files are located
@@ -124,7 +124,7 @@ def log_bet():
         ev = data["ev"]
         user = supabase.auth.get_user(token)
         user_id = user.user.id
-        supabase.table("Bets").insert({"home_team" : home_team,"away_team" : away_team, "team" : team, "sports_tag" :  sports_tag, "bookmaker" : bookmaker, "price" : price, "ev" : ev, "user_id" : user_id}).execute()
+        supabase2.table("Bets").insert({"home_team" : home_team,"away_team" : away_team, "team" : team, "sports_tag" :  sports_tag, "bookmaker" : bookmaker, "price" : price, "ev" : ev, "user_id" : user_id}).execute()
         return jsonify({"message": "success"})
     
     except Exception as e:
@@ -138,7 +138,7 @@ def my_bets():
         token = data["token"]
         user = supabase.auth.get_user(token)
         user_id = user.user.id
-        result = supabase.table("Bets").select("*").eq("user_id", user_id).execute()
+        result = supabase2.table("Bets").select("*").eq("user_id", user_id).execute()
         return jsonify(result.data)
 
     except Exception as e:
