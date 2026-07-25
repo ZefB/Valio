@@ -366,7 +366,7 @@
                 <span class="odds">${bet.price}</span>
             </div>
             <span class="EV">${bet.ev > 0 ? '+' : ''}${bet.ev}%</span>
-            ${currentSession ? `<button onclick="logBet('${bet.home_team}','${bet.away_team}', '${bet.team}', '${bet.sports_tag}','${bet.bookmaker}',${bet.price},${bet.ev}, this)">Log Bet</button>` : ''}
+            ${currentSession ? `<button onclick="logBet('${bet.home_team}','${bet.away_team}', '${bet.game_time}' , '${bet.team}', '${bet.sports_tag}','${bet.bookmaker}',${bet.price},${bet.ev}, this)">Log Bet</button>` : ''}
             `
             document.getElementById("results").appendChild(card)
             })
@@ -473,12 +473,13 @@
         updateAuthUI()
     }
 
-    function logBet(home_team, away_team, team, sports_tag, bookmaker, price, ev, btn){
+    function logBet(home_team, away_team, game_time, team, sports_tag, bookmaker, price, ev, btn){
         fetch("/log_bet", {
             method : "POST",
             headers:{"Content-Type":"application/json"},
             body: JSON.stringify({home_team: home_team,
                 away_team : away_team,
+                game_time : game_time,
                 team : team,
                 sports_tag : sports_tag,
                 bookmaker : bookmaker,

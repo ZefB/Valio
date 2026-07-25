@@ -98,7 +98,19 @@ if __name__ == "__main__":
         all_bets= all_bets + bets
 
     print(filter_bets(all_bets, 0.05))
-        
+
+def get_active_leagues(group_name):
+    url = f"https://api.the-odds-api.com/v4/sports"
+    response = requests.get(url,params={"apiKey": OddsApi})
+    league = []
+    for entry in response.json():
+        if entry["group"] == group_name and entry["active"] == True and entry["has_outrights"] == False:
+            league.append(entry["key"])
+    return league
+
+if __name__ == "__main__":
+    print(get_active_leagues("Soccer"))
+
 
                 
     
